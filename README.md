@@ -131,11 +131,13 @@ deliberate choices.
   through the Cloud NAT gateway (e.g. a reachability test from an instance
   behind it) was captured — the screenshot confirms the gateway's
   configuration and `Running` status, not a live traffic test.
-- Screenshots show Qwiklabs-generated temporary project IDs and student
-  usernames (e.g. `qwiklabs-gcp-02-88d38bc21b1f`,
-  `student_03_1bd1fe284f36@cloudshell`); these are disposable, randomly
-  assigned per session and not linked to any persistent account or
-  reachable outside that temporary environment.
+- Screenshots had their Qwiklabs-generated temporary project IDs and
+  student usernames (e.g. `qwiklabs-gcp-02-88d38bc21b1f`,
+  `student_03_1bd1fe284f36@cloudshell`) redacted before publication. These
+  identifiers are disposable, randomly assigned per session and not linked
+  to any persistent account or reachable outside that temporary
+  environment, but are masked here for consistency with the rest of the
+  portfolio.
 
 ## Portfolio
 
