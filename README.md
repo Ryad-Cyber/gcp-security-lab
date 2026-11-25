@@ -109,6 +109,19 @@ from silently escalating its own privileges through node service accounts.
 
 ![GKE cluster standard-cluster-1 created in us-central1, Regular release channel](screenshots/09-gke-cluster-overview.png)
 
+Workload hardening was then tested with **Pod Security Admission**: across
+two namespaces (`baseline-ns` and `restricted-ns`), deploying a privileged
+`nginx` pod was rejected under the `restricted` profile — no privileged
+mode, `allowPrivilegeEscalation=false` required, all Linux capabilities
+dropped (`drop: ["ALL"]`), and non-root execution (`runAsNonRoot=true`)
+required. In this Autopilot cluster, the request was additionally rejected
+by GKE's own admission layer (GKE Warden, `autogke-disallow-privilege`)
+before the standard `restricted` PodSecurity check was even reached on the
+`restricted-ns` attempt — two independent admission layers blocking the
+same non-compliant workload.
+
+![Privileged nginx pod rejected by Pod Security Admission under the restricted profile](screenshots/10-gke-pod-security-admission-restricted-forbidden.png)
+
 ## What these labs taught
 
 Private Google Access and Cloud NAT solve two different halves of the same
