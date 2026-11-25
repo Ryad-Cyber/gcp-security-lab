@@ -1,8 +1,9 @@
-# Google Cloud Labs — Storage, VPC, Compute Engine & Cloud NAT
+# Google Cloud Labs — Storage, VPC, Compute Engine, Cloud NAT & GKE
 
 Hands-on Google Cloud labs completed through **Google Cloud training on
 Coursera** (Qwiklabs-style sandbox environments), covering Cloud Storage,
-custom VPC networking, Compute Engine, Private Google Access and Cloud NAT.
+custom VPC networking, Compute Engine, Private Google Access, Cloud NAT and
+IAM governance of a GKE cluster.
 
 > **Scope note.** These are guided training labs run in separate, temporary
 > Qwiklabs sandbox projects — not a production environment and not a single
@@ -16,9 +17,10 @@ custom VPC networking, Compute Engine, Private Google Access and Cloud NAT.
 Work through core Google Cloud building blocks from a security and
 networking angle: object storage and the `gcloud` CLI, custom-mode VPC
 design across regions, Compute Engine instance exposure (with and without a
-public IP), Private Google Access for instances with no external IP, and
-Cloud NAT as the mechanism that lets such instances still reach the
-internet outbound.
+public IP), Private Google Access for instances with no external IP, Cloud
+NAT as the mechanism that lets such instances still reach the internet
+outbound, and IAM least-privilege delegation when provisioning a GKE
+cluster.
 
 ## Environment
 
@@ -88,6 +90,25 @@ from outside the VPC.
 
 ![Cloud NAT gateway nat-config, network privatenet, region europe-west4, status Running](screenshots/07-cloud-nat-gateway.png)
 
+### 7. GKE cluster governance — IAM delegation & least privilege
+
+In a separate training exercise, provisioned a Kubernetes Engine cluster
+(`standard-cluster-1`, `us-central1`, Regular release channel, GKE
+`1.37.1-gke.1552000`) using a second, delegated operator account rather
+than the project's primary identity. Before granting that account access
+to administer the cluster, configured IAM so it could provision the
+Compute Engine-backed GKE nodes without broader administrative rights:
+granted the **Service Account User** role (`roles/iam.serviceAccountUser`)
+on the Compute Engine default service account specifically, rather than
+elevating the operator to a project-wide admin. This separates *who can
+administer the cluster* from *who can act as the service accounts the
+cluster depends on* — the actual control that keeps an operator account
+from silently escalating its own privileges through node service accounts.
+
+![IAM: Service Account User role granted on the Compute Engine default service account](screenshots/08-gke-iam-service-account-user.png)
+
+![GKE cluster standard-cluster-1 created in us-central1, Regular release channel](screenshots/09-gke-cluster-overview.png)
+
 ## What these labs taught
 
 Private Google Access and Cloud NAT solve two different halves of the same
@@ -115,6 +136,9 @@ deliberate choices.
 - Configuring and verifying a Cloud NAT gateway, and explaining the
   difference between the outbound connectivity it provides and the
   inbound exposure it does not.
+- Delegating least-privilege IAM access (`Service Account User` on a
+  specific service account) to provision a GKE cluster without granting
+  broader administrative rights.
 
 ## Limitations
 
@@ -133,11 +157,13 @@ deliberate choices.
   configuration and `Running` status, not a live traffic test.
 - Screenshots had their Qwiklabs-generated temporary project IDs and
   student usernames (e.g. `qwiklabs-gcp-02-88d38bc21b1f`,
-  `student_03_1bd1fe284f36@cloudshell`) redacted before publication. These
-  identifiers are disposable, randomly assigned per session and not linked
-  to any persistent account or reachable outside that temporary
-  environment, but are masked here for consistency with the rest of the
-  portfolio.
+  `student_03_1bd1fe284f36@cloudshell`, and — in the GKE screenshots —
+  `qwiklabs-gcp-02-3bed4488b800`, the service account numeric ID, and the
+  `student-01-...@qwiklabs.net` / `student-04-...@qwiklabs.net` principal
+  emails) redacted before publication. These identifiers are disposable,
+  randomly assigned per session and not linked to any persistent account
+  or reachable outside that temporary environment, but are masked here for
+  consistency with the rest of the portfolio.
 
 ## Portfolio
 
